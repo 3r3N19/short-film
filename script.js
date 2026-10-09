@@ -65,7 +65,7 @@ const CLIPS = [
         content: [
           { type: "action", text: "Raven sits in front of laptop/phone." },
           { type: "action", text: "Important: Huwag ipakita ang actual sensitive video. Screen lang na may generic blurred/black screen." },
-          { type: "action", text: 'Raven types: "The truth about Alex Reyes."' },
+          { type: "action", text: 'Raven types: “The truth about Alex Reyes.”' },
           { type: "action", text: "Raven pauses." }
         ]
       },
@@ -164,7 +164,7 @@ const CLIPS = [
           {
             type: "insert",
             label: "Insert Shot – Fake Headlines",
-            lines: ['"ALEX REYES EXPOSED"', '"FANS DEMAND ANSWERS"', '"CANCEL ALEX REYES"']
+            lines: ['“ALEX REYES EXPOSED”', '“FANS DEMAND ANSWERS”', '“CANCEL ALEX REYES”']
           }
         ]
       },
@@ -542,7 +542,7 @@ const CLIPS = [
           {
             type: "insert",
             label: "Social Post",
-            lines: ['"LOOK WHAT THIS PERSON DID!"']
+            lines: ['“LOOK WHAT THIS PERSON DID!”']
           },
           { type: "action", text: "Finger is about to press SHARE." }
         ]

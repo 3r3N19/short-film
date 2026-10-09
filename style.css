@@ -29,8 +29,6 @@
   --green-bg:     rgba(39, 174, 96, 0.12);
   --yellow:       #f39c12;
   --yellow-bg:    rgba(243, 156, 18, 0.12);
-  --blue-tag:     #3498db;
-  --blue-bg:      rgba(52, 152, 219, 0.12);
   --radius:       10px;
   --radius-sm:    6px;
   --max-width:    1140px;
@@ -254,7 +252,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
-  transition: border-color 0.15s ease, transform 0.15s ease;
+  transition: border-color 0.15s ease;
   position: relative;
 }
 
