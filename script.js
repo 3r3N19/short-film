@@ -4,6 +4,15 @@
    Live Deadline Countdown & Shareable URL Sync System
    ============================================================ */
 
+// ─── Inline SVG Icons ──────────────────────────
+const ICONS = {
+  clock: `<svg class="icon mini-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+  shirt: `<svg class="icon mini-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.5a2 2 0 0 0 2 1.67h1.18L6 20a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l-.04-9.14h1.18a2 2 0 0 0 2-1.67l.58-3.5a2 2 0 0 0-1.34-2.23z"/></svg>`,
+  pin: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`,
+  users: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+  search: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`
+};
+
 const CLIPS = [
   {
     id: 1,
@@ -628,9 +637,9 @@ function saveState() {
 
 let state = loadState();
 let activeFilter = "all";
+let searchQuery = "";
 
 // ─── URL Sync Engine ───────────────────────────
-/** Encodes state into a safe base64 URL payload */
 function encodeStatePayload(s) {
   try {
     return encodeURIComponent(btoa(JSON.stringify(s)));
@@ -639,7 +648,6 @@ function encodeStatePayload(s) {
   }
 }
 
-/** Decodes base64 URL payload into state */
 function decodeStatePayload(str) {
   try {
     const jsonStr = atob(decodeURIComponent(str));
@@ -649,7 +657,6 @@ function decodeStatePayload(str) {
   }
 }
 
-/** Updates browser URL address bar in background */
 function updateUrlWithSyncData() {
   const syncPayload = encodeStatePayload(state);
   if (!syncPayload) return;
@@ -659,7 +666,6 @@ function updateUrlWithSyncData() {
   window.history.replaceState({}, "", url.toString());
 }
 
-/** Checks URL for ?sync= payload on load */
 function checkAndLoadSyncFromURL() {
   const params = new URLSearchParams(window.location.search);
   const syncParam = params.get("sync");
@@ -669,13 +675,11 @@ function checkAndLoadSyncFromURL() {
     if (importedState && typeof importedState === "object") {
       state = importedState;
       saveState();
-      showToast("✓ Progress synced from link!", "success");
-      console.log("✓ Successfully loaded sync state from URL parameter.");
+      showToast("Progress successfully synced from link!", "success");
     }
   }
 }
 
-/** Generates clean shareable link */
 function getShareableSyncLink() {
   const syncPayload = encodeStatePayload(state);
   const baseUrl = window.location.origin + window.location.pathname;
@@ -700,55 +704,72 @@ function showToast(message, type = "normal") {
   }, 3500);
 }
 
-// ─── Deadline Countdown Timer ──────────────────
+// ─── Deadline Countdown Timer (Split Boxes) ────
 // Target: October 20, 2026, 11:30 PM (23:30:00)
 const TARGET_DEADLINE = new Date("2026-10-20T23:30:00");
 
 function updateCountdown() {
-  const countdownEl = document.getElementById("deadlineCountdown");
-  if (!countdownEl) return;
+  const cdDays  = document.getElementById("cdDays");
+  const cdHours = document.getElementById("cdHours");
+  const cdMins  = document.getElementById("cdMins");
+  const cdSecs  = document.getElementById("cdSecs");
+  if (!cdDays) return;
 
   const now = new Date();
   const diff = TARGET_DEADLINE.getTime() - now.getTime();
 
   if (diff <= 0) {
-    countdownEl.textContent = "Deadline Passed";
-    countdownEl.style.color = "#e74c3c";
+    cdDays.textContent  = "00";
+    cdHours.textContent = "00";
+    cdMins.textContent  = "00";
+    cdSecs.textContent  = "00";
     return;
   }
 
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const days  = Math.floor(diff / (1000 * 60 * 60 * 24));
   const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-  const mins = Math.floor((diff / (1000 * 60)) % 60);
-  const secs = Math.floor((diff / 1000) % 60);
+  const mins  = Math.floor((diff / (1000 * 60)) % 60);
+  const secs  = Math.floor((diff / 1000) % 60);
 
-  countdownEl.textContent = `${days}d ${hours}h ${mins}m ${secs}s`;
+  cdDays.textContent  = String(days).padStart(2, "0");
+  cdHours.textContent = String(hours).padStart(2, "0");
+  cdMins.textContent  = String(mins).padStart(2, "0");
+  cdSecs.textContent  = String(secs).padStart(2, "0");
 }
 
 setInterval(updateCountdown, 1000);
 updateCountdown();
 
 // ─── DOM References ────────────────────────────
-const clipsGrid       = document.getElementById("clipsGrid");
-const totalEl         = document.getElementById("totalClips");
-const completedEl     = document.getElementById("completedClips");
-const inProgressEl    = document.getElementById("inProgressClips");
-const remainingEl     = document.getElementById("remainingClips");
-const progressPctEl   = document.getElementById("progressPercent");
-const progressBarEl   = document.getElementById("progressBar");
-const filterBtns      = document.querySelectorAll(".filter-btn");
-const copySyncBtn     = document.getElementById("copySyncBtn");
+const clipsGrid         = document.getElementById("clipsGrid");
+const totalEl           = document.getElementById("totalClips");
+const completedEl       = document.getElementById("completedClips");
+const inProgressEl      = document.getElementById("inProgressClips");
+const remainingEl       = document.getElementById("remainingClips");
+const progressPctEl     = document.getElementById("progressPercent");
+const progressBarEl     = document.getElementById("progressBar");
+const progressRatioEl   = document.getElementById("progressRatio");
 
-const modalOverlay    = document.getElementById("modalOverlay");
-const modalClipNum    = document.getElementById("modalClipNum");
-const modalTitle      = document.getElementById("modalTitle");
-const modalClose      = document.getElementById("modalClose");
-const scriptMeta      = document.getElementById("scriptMeta");
-const wardrobeSection = document.getElementById("wardrobeSection");
-const scriptShots     = document.getElementById("scriptShots");
-const checklistList   = document.getElementById("checklistList");
-const checklistProg   = document.getElementById("checklistProgress");
-const checklistBarEl  = document.getElementById("checklistBar");
+const filterBtns        = document.querySelectorAll(".filter-btn");
+const searchInput       = document.getElementById("searchInput");
+const copySyncBtn       = document.getElementById("copySyncBtn");
+
+const badgeAll          = document.getElementById("badgeAll");
+const badgeNotStarted   = document.getElementById("badgeNotStarted");
+const badgeInProgress   = document.getElementById("badgeInProgress");
+const badgeCompleted    = document.getElementById("badgeCompleted");
+
+const modalOverlay      = document.getElementById("modalOverlay");
+const modalClipNum      = document.getElementById("modalClipNum");
+const modalSceneNum     = document.getElementById("modalSceneNum");
+const modalTitle        = document.getElementById("modalTitle");
+const modalClose        = document.getElementById("modalClose");
+const scriptMeta        = document.getElementById("scriptMeta");
+const wardrobeSection   = document.getElementById("wardrobeSection");
+const scriptShots       = document.getElementById("scriptShots");
+const checklistList     = document.getElementById("checklistList");
+const checklistProg     = document.getElementById("checklistProgress");
+const checklistBarEl    = document.getElementById("checklistBar");
 
 // ─── Helpers ───────────────────────────────────
 function escapeHTML(str) {
@@ -767,9 +788,10 @@ function formatStatus(status) {
   }
 }
 
-// ─── Stats Calculation ─────────────────────────
+// ─── Stats Calculation & Filter Badges ─────────
 function updateStats() {
   const total = CLIPS.length;
+  let notStarted = 0;
   let completed = 0;
   let inProgress = 0;
 
@@ -777,6 +799,7 @@ function updateStats() {
     const st = state[clip.id]?.status || "not-started";
     if (st === "completed") completed++;
     else if (st === "in-progress") inProgress++;
+    else notStarted++;
   });
 
   const remaining = total - completed;
@@ -784,23 +807,45 @@ function updateStats() {
 
   totalEl.textContent       = total;
   completedEl.textContent   = completed;
-  if (inProgressEl) inProgressEl.textContent = inProgress;
+  inProgressEl.textContent  = inProgress;
   remainingEl.textContent   = remaining;
   progressPctEl.textContent = `${pct}%`;
   progressBarEl.style.width = `${pct}%`;
+  if (progressRatioEl) progressRatioEl.textContent = `${completed} of ${total} complete`;
+
+  // Update filter pill badges
+  if (badgeAll) badgeAll.textContent = total;
+  if (badgeNotStarted) badgeNotStarted.textContent = notStarted;
+  if (badgeInProgress) badgeInProgress.textContent = inProgress;
+  if (badgeCompleted) badgeCompleted.textContent = completed;
 }
 
 // ─── Render Clip Cards ─────────────────────────
 function renderCards() {
   clipsGrid.innerHTML = "";
 
+  const q = searchQuery.trim().toLowerCase();
+
   const filteredClips = CLIPS.filter((clip) => {
-    if (activeFilter === "all") return true;
-    return state[clip.id]?.status === activeFilter;
+    const matchesStatus = (activeFilter === "all") || (state[clip.id]?.status === activeFilter);
+    if (!matchesStatus) return false;
+
+    if (!q) return true;
+
+    const inTitle    = clip.title.toLowerCase().includes(q);
+    const inScene    = clip.scene.toLowerCase().includes(q);
+    const inLocation = clip.location.toLowerCase().includes(q);
+    const inActors   = clip.actors.some(a => a.toLowerCase().includes(q));
+
+    return inTitle || inScene || inLocation || inActors;
   });
 
   if (filteredClips.length === 0) {
-    clipsGrid.innerHTML = `<div class="clips-grid__empty">No clips found with status "${formatStatus(activeFilter)}".</div>`;
+    clipsGrid.innerHTML = `
+      <div class="clips-grid__empty">
+        <p>No clips found matching your filters.</p>
+      </div>
+    `;
     return;
   }
 
@@ -816,15 +861,13 @@ function renderCards() {
 
     card.innerHTML = `
       <div class="clip-card__top-row">
-        <span class="clip-card__number">Clip ${clip.id}</span>
-        <span class="clip-card__est-time">⏱️ ${clip.estTime}</span>
+        <span class="clip-card__number">CLIP ${String(clip.id).padStart(2, "0")}</span>
+        <span class="clip-card__est-time">${ICONS.clock} ${clip.estTime}</span>
       </div>
       <h3 class="clip-card__title">${escapeHTML(clip.title)}</h3>
-      <div class="clip-card__tags">
-        <span class="clip-card__scene-tag">${escapeHTML(clip.scene)}</span>
-      </div>
+      <div class="clip-card__scene-tag">${escapeHTML(clip.scene)}</div>
       <div class="clip-card__wardrobe-preview" title="Ano bagay isuot">
-        👕 <strong>Attire:</strong> ${escapeHTML(wardrobeSnippet)}
+        ${ICONS.shirt} <strong>Attire:</strong> ${escapeHTML(wardrobeSnippet)}
       </div>
       <span class="clip-card__status clip-card__status--${clipState.status}">
         <span class="clip-card__status-dot"></span>
@@ -836,7 +879,7 @@ function renderCards() {
           <option value="in-progress" ${clipState.status === "in-progress" ? "selected" : ""}>In Progress</option>
           <option value="completed"   ${clipState.status === "completed" ? "selected" : ""}>Completed</option>
         </select>
-        <button class="clip-card__btn" data-id="${clip.id}">View Script</button>
+        <button class="clip-card__btn" data-id="${clip.id}">View Script →</button>
       </div>
     `;
 
@@ -865,11 +908,11 @@ function handleStatusChange(e) {
     saveState();
     updateStats();
     renderCards();
-    showToast(`Clip ${clipId} marked as "${formatStatus(newStatus)}". Sync link updated!`, "success");
+    showToast(`Clip ${clipId} marked as "${formatStatus(newStatus)}".`, "success");
   }
 }
 
-// ─── Filter Events ─────────────────────────────
+// ─── Search & Filter Events ────────────────────
 filterBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
     filterBtns.forEach((b) => b.classList.remove("active"));
@@ -879,6 +922,13 @@ filterBtns.forEach((btn) => {
   });
 });
 
+if (searchInput) {
+  searchInput.addEventListener("input", (e) => {
+    searchQuery = e.target.value;
+    renderCards();
+  });
+}
+
 // ─── Copy Sync Link Button ─────────────────────
 if (copySyncBtn) {
   copySyncBtn.addEventListener("click", async () => {
@@ -887,7 +937,6 @@ if (copySyncBtn) {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(link);
       } else {
-        // Fallback for older browsers
         const tempInput = document.createElement("input");
         tempInput.value = link;
         document.body.appendChild(tempInput);
@@ -895,9 +944,9 @@ if (copySyncBtn) {
         document.execCommand("copy");
         document.body.removeChild(tempInput);
       }
-      showToast("🔗 Sync link copied! Buksan ito sa kabilang device para mag-sync.", "success");
+      showToast("Sync link copied! Open this on your other device to sync.", "success");
     } catch (err) {
-      prompt("Kopyahin ang link na ito para buksan sa kabilang device:", link);
+      prompt("Copy this link to open on another device:", link);
     }
   });
 }
@@ -959,21 +1008,22 @@ function openModal(clipId) {
   const clip = CLIPS.find((c) => c.id === clipId);
   if (!clip) return;
 
-  modalClipNum.textContent = `Clip ${clip.id} • ${clip.scene}`;
+  modalClipNum.textContent = `CLIP ${String(clip.id).padStart(2, "0")}`;
+  modalSceneNum.textContent = clip.scene;
   modalTitle.textContent = clip.title;
 
   // Metadata tags (Location, Actors, Est Runtime)
   scriptMeta.innerHTML = `
     <div class="script-meta__tag">
-      <span class="script-meta__tag-icon">⏱️</span>
+      <span class="script-meta__tag-icon">${ICONS.clock}</span>
       <span>Est. Clip Length: <strong>${escapeHTML(clip.estTime)}</strong></span>
     </div>
     <div class="script-meta__tag">
-      <span class="script-meta__tag-icon">📍</span>
+      <span class="script-meta__tag-icon">${ICONS.pin}</span>
       <span>${escapeHTML(clip.location)}</span>
     </div>
     <div class="script-meta__tag">
-      <span class="script-meta__tag-icon">👥</span>
+      <span class="script-meta__tag-icon">${ICONS.users}</span>
       <span>${escapeHTML(clip.actors.join(", "))}</span>
     </div>
   `;
@@ -982,7 +1032,7 @@ function openModal(clipId) {
   if (clip.wardrobe && clip.wardrobe.length > 0) {
     let wardrobeHTML = `
       <div class="wardrobe-section__title">
-        <span>👕</span> Ano ang Bagay Isuot (Wardrobe / Costume Guide)
+        <span>${ICONS.shirt}</span> Ano ang Bagay Isuot (Wardrobe / Costume Guide)
       </div>
       <ul class="wardrobe-section__list">
     `;
@@ -990,7 +1040,7 @@ function openModal(clipId) {
       wardrobeHTML += `
         <li class="wardrobe-section__item">
           <span class="wardrobe-section__char">${escapeHTML(w.character)}:</span>
-          ${escapeHTML(w.outfit)}
+          <span>${escapeHTML(w.outfit)}</span>
         </li>
       `;
     });

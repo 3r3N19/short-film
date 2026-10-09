@@ -3,40 +3,90 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Film Clip Tracker</title>
+  <title>Film Clip Tracker — Short Film Production Hub</title>
+  <!-- Google Fonts for Cinematic UI & Screenplay Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
+  <!-- Ambient Cinematic Glow -->
+  <div class="ambient-glow"></div>
+
   <!-- ===== HEADER ===== -->
   <header class="header">
-    <div class="header__icon">🎬</div>
-    <h1 class="header__title">Film Clip Tracker</h1>
-    <p class="header__subtitle">Track your short-film clips from script to screen</p>
+    <div class="header__brand">
+      <div class="header__slate-icon">
+        <svg class="icon icon--slate" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="2" />
+          <path d="m4 4 3 4" />
+          <path d="m11 4 3 4" />
+          <path d="m18 4 3 4" />
+          <path d="M2 8h20" />
+        </svg>
+      </div>
+      <div>
+        <h1 class="header__title">Film Clip Tracker</h1>
+        <p class="header__subtitle">Official Short Film Production Tracker & Screenplay Hub</p>
+      </div>
+    </div>
 
-    <!-- Production Meta Banner: Estimated Runtime & Deadline Countdown -->
+    <!-- Production Meta Banner: Estimated Runtime & Live Deadline Countdown -->
     <div class="production-banner">
       <div class="production-banner__item">
-        <span class="production-banner__icon">⏱️</span>
+        <span class="banner-badge-icon">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+        </span>
         <div>
-          <div class="production-banner__label">Est. Total Runtime</div>
-          <div class="production-banner__val">~10 - 13 mins (Avg. 11.5 mins)</div>
+          <span class="production-banner__label">Est. Total Runtime</span>
+          <div class="production-banner__val">~10 - 13 mins <span class="val-sub">(Avg. 11.5m)</span></div>
         </div>
       </div>
+
       <div class="production-banner__divider"></div>
+
       <div class="production-banner__item">
-        <span class="production-banner__icon">🎯</span>
+        <span class="banner-badge-icon">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <circle cx="12" cy="12" r="6" />
+            <circle cx="12" cy="12" r="2" />
+          </svg>
+        </span>
         <div>
-          <div class="production-banner__label">Production Deadline</div>
-          <div class="production-banner__val">Oct 20, 2026 • 11:30 PM</div>
+          <span class="production-banner__label">Production Target</span>
+          <div class="production-banner__val">Oct 20, 2026 <span class="val-sub">• 11:30 PM</span></div>
         </div>
       </div>
+
       <div class="production-banner__divider"></div>
+
+      <!-- Live Split Countdown Units -->
       <div class="production-banner__item production-banner__item--timer">
-        <span class="production-banner__icon">⏳</span>
+        <span class="banner-badge-icon">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 22h14" />
+            <path d="M5 2h14" />
+            <path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22" />
+            <path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2" />
+          </svg>
+        </span>
         <div>
-          <div class="production-banner__label">Time Remaining</div>
-          <div class="production-banner__val countdown-time" id="deadlineCountdown">Calculating...</div>
+          <span class="production-banner__label">Time Remaining</span>
+          <div class="countdown-boxes" id="countdownBoxes">
+            <div class="cbox"><span id="cdDays">00</span><small>D</small></div>
+            <span class="csep">:</span>
+            <div class="cbox"><span id="cdHours">00</span><small>H</small></div>
+            <span class="csep">:</span>
+            <div class="cbox"><span id="cdMins">00</span><small>M</small></div>
+            <span class="csep">:</span>
+            <div class="cbox"><span id="cdSecs">00</span><small>S</small></div>
+          </div>
         </div>
       </div>
     </div>
@@ -45,25 +95,61 @@
   <!-- ===== STATS BAR ===== -->
   <section class="stats">
     <div class="stat-card">
+      <span class="stat-card__icon">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18" />
+          <line x1="7" y1="2" x2="7" y2="22" />
+          <line x1="17" y1="2" x2="17" y2="22" />
+          <line x1="2" y1="12" x2="22" y2="12" />
+          <line x1="2" y1="7" x2="7" y2="7" />
+          <line x1="2" y1="17" x2="7" y2="17" />
+          <line x1="17" y1="17" x2="22" y2="17" />
+          <line x1="17" y1="7" x2="22" y2="7" />
+        </svg>
+      </span>
       <span class="stat-card__value" id="totalClips">12</span>
       <span class="stat-card__label">Total Clips</span>
     </div>
-    <div class="stat-card">
-      <span class="stat-card__value stat-card__value--green" id="completedClips">0</span>
+
+    <div class="stat-card stat-card--green">
+      <span class="stat-card__icon">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+          <polyline points="22 4 12 14.01 9 11.01" />
+        </svg>
+      </span>
+      <span class="stat-card__value" id="completedClips">0</span>
       <span class="stat-card__label">Completed</span>
     </div>
-    <div class="stat-card">
-      <span class="stat-card__value stat-card__value--yellow" id="inProgressClips">0</span>
+
+    <div class="stat-card stat-card--yellow">
+      <span class="stat-card__icon">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+        </svg>
+      </span>
+      <span class="stat-card__value" id="inProgressClips">0</span>
       <span class="stat-card__label">In Progress</span>
     </div>
-    <div class="stat-card">
+
+    <div class="stat-card stat-card--muted">
+      <span class="stat-card__icon">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <polyline points="12 6 12 12 14 14" />
+        </svg>
+      </span>
       <span class="stat-card__value" id="remainingClips">12</span>
       <span class="stat-card__label">Remaining</span>
     </div>
+
     <div class="stat-card stat-card--wide">
       <div class="stat-card__progress-header">
-        <span class="stat-card__label">Overall Progress</span>
-        <span class="stat-card__value" id="progressPercent">0%</span>
+        <div class="progress-title-wrap">
+          <span class="stat-card__label">Filming Progress</span>
+          <span class="progress-ratio" id="progressRatio">0 of 12 complete</span>
+        </div>
+        <span class="stat-card__value stat-card__value--pct" id="progressPercent">0%</span>
       </div>
       <div class="progress-bar">
         <div class="progress-bar__fill" id="progressBar"></div>
@@ -71,17 +157,33 @@
     </div>
   </section>
 
-  <!-- ===== ACTION BAR (Filter + Sync Link Button) ===== -->
+  <!-- ===== ACTION BAR (Search + Filter + Sync Link Button) ===== -->
   <div class="action-bar">
-    <div class="filter-bar">
-      <button class="filter-btn active" data-filter="all">All (12)</button>
-      <button class="filter-btn" data-filter="not-started">Not Started</button>
-      <button class="filter-btn" data-filter="in-progress">In Progress</button>
-      <button class="filter-btn" data-filter="completed">Completed</button>
+    <div class="search-box">
+      <span class="search-box__icon">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+      </span>
+      <input type="text" id="searchInput" placeholder="Search clip, scene, or character..." aria-label="Search clips" />
     </div>
+
+    <div class="filter-bar">
+      <button class="filter-btn active" data-filter="all">All <span class="badge" id="badgeAll">12</span></button>
+      <button class="filter-btn" data-filter="not-started">Not Started <span class="badge" id="badgeNotStarted">12</span></button>
+      <button class="filter-btn" data-filter="in-progress">In Progress <span class="badge" id="badgeInProgress">0</span></button>
+      <button class="filter-btn" data-filter="completed">Completed <span class="badge" id="badgeCompleted">0</span></button>
+    </div>
+
     <div class="sync-actions">
       <button class="sync-btn" id="copySyncBtn" title="Kopyahin ang link na may dalang progress para ma-access sa ibang device">
-        <span class="sync-btn__icon">🔗</span>
+        <span class="sync-btn__icon">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+          </svg>
+        </span>
         <span>Copy Sync Link</span>
       </button>
     </div>
@@ -89,47 +191,68 @@
 
   <!-- ===== CLIP CARDS GRID ===== -->
   <main class="clips-grid" id="clipsGrid">
-    <!-- Cards rendered by script.js -->
+    <!-- Rendered dynamically by script.js -->
   </main>
 
   <!-- ===== SCRIPT VIEWER MODAL ===== -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal" role="dialog" aria-modal="true">
 
+      <!-- Modal Header -->
       <div class="modal__header">
-        <div>
-          <span class="modal__clip-number" id="modalClipNum">Clip 1</span>
+        <div class="modal__header-left">
+          <div class="modal__tag-row">
+            <span class="modal__clip-badge" id="modalClipNum">Clip 1</span>
+            <span class="modal__scene-badge" id="modalSceneNum">Scene 1</span>
+          </div>
           <h2 class="modal__title" id="modalTitle">Clip Title</h2>
         </div>
-        <button class="modal__close" id="modalClose" aria-label="Close modal">&times;</button>
+        <button class="modal__close" id="modalClose" aria-label="Close modal">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
       </div>
 
+      <!-- Modal Body -->
       <div class="modal__body">
 
-        <!-- Script meta: Location, Cast, Runtime Est -->
+        <!-- Script Meta Tags -->
         <div class="script-meta" id="scriptMeta"></div>
 
-        <!-- Costume / Wardrobe Section (Ano bagay isuot) -->
+        <!-- Costume / Wardrobe Section -->
         <div class="wardrobe-section" id="wardrobeSection"></div>
 
-        <!-- Script content — shots -->
-        <div class="script-shots" id="scriptShots"></div>
+        <!-- Screenplay Content -->
+        <div class="script-shots-container">
+          <div class="screenplay-header">
+            <span>OFFICIAL SHOOTING SCRIPT</span>
+            <span class="screenplay-header__sub">ORIGINAL SCRIPT • SCENE DIRECTIONS</span>
+          </div>
+          <div class="script-shots" id="scriptShots"></div>
+        </div>
 
         <!-- Checklist -->
         <div class="checklist">
-          <h3 class="checklist__title">Production Checklist</h3>
-          <div class="checklist__progress">
-            <span id="checklistProgress">0 / 6 tasks</span>
-            <div class="progress-bar progress-bar--small">
-              <div class="progress-bar__fill" id="checklistBar"></div>
+          <div class="checklist__header-row">
+            <div>
+              <h3 class="checklist__title">Production Checklist</h3>
+              <p class="checklist__subtitle">Track critical filming preparation tasks for this clip</p>
             </div>
+            <div class="checklist__stats-box">
+              <span id="checklistProgress">0 / 6 tasks</span>
+            </div>
+          </div>
+          <div class="progress-bar progress-bar--small">
+            <div class="progress-bar__fill" id="checklistBar"></div>
           </div>
           <ul class="checklist__list" id="checklistList"></ul>
         </div>
 
-      </div>
-    </div>
-  </div>
+      </div><!-- /modal__body -->
+    </div><!-- /modal -->
+  </div><!-- /modal-overlay -->
 
   <!-- Toast Notification -->
   <div class="toast" id="toast"></div>
