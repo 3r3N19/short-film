@@ -29,6 +29,7 @@
   --green-bg:     rgba(39, 174, 96, 0.12);
   --yellow:       #f39c12;
   --yellow-bg:    rgba(243, 156, 18, 0.12);
+  --blue:         #3498db;
   --radius:       10px;
   --radius-sm:    6px;
   --max-width:    1140px;
@@ -200,13 +201,21 @@ body {
   transition: width 0.35s ease;
 }
 
-/* ----- Filter Bar ----- */
-.filter-bar {
+/* ----- Action Bar (Filter + Sync Actions) ----- */
+.action-bar {
   display: flex;
-  gap: 0.4rem;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
   max-width: var(--max-width);
   margin: 1.25rem auto 0.9rem;
   padding: 0 1rem;
+}
+
+.filter-bar {
+  display: flex;
+  gap: 0.4rem;
   flex-wrap: wrap;
 }
 
@@ -231,6 +240,40 @@ body {
   color: #fff;
   background: var(--accent);
   border-color: var(--accent);
+}
+
+.sync-actions {
+  display: flex;
+  align-items: center;
+}
+
+.sync-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.sync-btn:hover {
+  color: #fff;
+  background: var(--surface-hover);
+  border-color: var(--accent-light);
+}
+
+.sync-btn:active {
+  transform: scale(0.98);
+}
+
+.sync-btn__icon {
+  font-size: 0.9rem;
 }
 
 /* ----- Clip Cards Grid ----- */
@@ -774,6 +817,38 @@ body {
   font-size: 0.9rem;
 }
 
+/* ----- Toast Notification ----- */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #1c1c1c;
+  color: #fff;
+  border: 1px solid var(--border-light);
+  border-left: 4px solid var(--accent-light);
+  padding: 0.85rem 1.25rem;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  font-size: 0.88rem;
+  font-weight: 600;
+  z-index: 2000;
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  max-width: 90vw;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.toast--success {
+  border-left-color: var(--green);
+}
+
 /* ----- Responsive ----- */
 @media (max-width: 680px) {
   .header {
@@ -795,6 +870,17 @@ body {
     display: none;
   }
 
+  .action-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
+  }
+
+  .sync-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
   .clips-grid {
     grid-template-columns: 1fr;
   }
@@ -806,11 +892,6 @@ body {
 
   .stat-card__value {
     font-size: 1.25rem;
-  }
-
-  .filter-bar {
-    margin-top: 1rem;
-    margin-bottom: 0.75rem;
   }
 
   .modal {
@@ -825,5 +906,12 @@ body {
 
   .modal__body {
     padding: 1rem;
+  }
+
+  .toast {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    text-align: center;
   }
 }

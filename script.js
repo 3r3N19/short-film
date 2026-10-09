@@ -1,7 +1,7 @@
 /* ============================================================
    FILM CLIP TRACKER — script.js
    Full Production Scripts, Wardrobe Guides, Estimated Runtimes,
-   Live Deadline Countdown & LocalStorage Tracker
+   Live Deadline Countdown & Shareable URL Sync System
    ============================================================ */
 
 const CLIPS = [
@@ -620,6 +620,7 @@ function loadState() {
 function saveState() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    updateUrlWithSyncData();
   } catch (err) {
     console.warn("Failed to save state:", err);
   }
@@ -627,6 +628,77 @@ function saveState() {
 
 let state = loadState();
 let activeFilter = "all";
+
+// ─── URL Sync Engine ───────────────────────────
+/** Encodes state into a safe base64 URL payload */
+function encodeStatePayload(s) {
+  try {
+    return encodeURIComponent(btoa(JSON.stringify(s)));
+  } catch (e) {
+    return "";
+  }
+}
+
+/** Decodes base64 URL payload into state */
+function decodeStatePayload(str) {
+  try {
+    const jsonStr = atob(decodeURIComponent(str));
+    return JSON.parse(jsonStr);
+  } catch (e) {
+    return null;
+  }
+}
+
+/** Updates browser URL address bar in background */
+function updateUrlWithSyncData() {
+  const syncPayload = encodeStatePayload(state);
+  if (!syncPayload) return;
+
+  const url = new URL(window.location.href);
+  url.searchParams.set("sync", syncPayload);
+  window.history.replaceState({}, "", url.toString());
+}
+
+/** Checks URL for ?sync= payload on load */
+function checkAndLoadSyncFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  const syncParam = params.get("sync");
+
+  if (syncParam) {
+    const importedState = decodeStatePayload(syncParam);
+    if (importedState && typeof importedState === "object") {
+      state = importedState;
+      saveState();
+      showToast("✓ Progress synced from link!", "success");
+      console.log("✓ Successfully loaded sync state from URL parameter.");
+    }
+  }
+}
+
+/** Generates clean shareable link */
+function getShareableSyncLink() {
+  const syncPayload = encodeStatePayload(state);
+  const baseUrl = window.location.origin + window.location.pathname;
+  return `${baseUrl}?sync=${syncPayload}`;
+}
+
+// ─── Toast Notifications ───────────────────────
+let toastTimer = null;
+function showToast(message, type = "normal") {
+  const toastEl = document.getElementById("toast");
+  if (!toastEl) return;
+
+  toastEl.textContent = message;
+  toastEl.className = "toast show";
+  if (type === "success") {
+    toastEl.classList.add("toast--success");
+  }
+
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toastEl.classList.remove("show");
+  }, 3500);
+}
 
 // ─── Deadline Countdown Timer ──────────────────
 // Target: October 20, 2026, 11:30 PM (23:30:00)
@@ -665,6 +737,7 @@ const remainingEl     = document.getElementById("remainingClips");
 const progressPctEl   = document.getElementById("progressPercent");
 const progressBarEl   = document.getElementById("progressBar");
 const filterBtns      = document.querySelectorAll(".filter-btn");
+const copySyncBtn     = document.getElementById("copySyncBtn");
 
 const modalOverlay    = document.getElementById("modalOverlay");
 const modalClipNum    = document.getElementById("modalClipNum");
@@ -792,6 +865,7 @@ function handleStatusChange(e) {
     saveState();
     updateStats();
     renderCards();
+    showToast(`Clip ${clipId} marked as "${formatStatus(newStatus)}". Sync link updated!`, "success");
   }
 }
 
@@ -804,6 +878,29 @@ filterBtns.forEach((btn) => {
     renderCards();
   });
 });
+
+// ─── Copy Sync Link Button ─────────────────────
+if (copySyncBtn) {
+  copySyncBtn.addEventListener("click", async () => {
+    const link = getShareableSyncLink();
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(link);
+      } else {
+        // Fallback for older browsers
+        const tempInput = document.createElement("input");
+        tempInput.value = link;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+      }
+      showToast("🔗 Sync link copied! Buksan ito sa kabilang device para mag-sync.", "success");
+    } catch (err) {
+      prompt("Kopyahin ang link na ito para buksan sa kabilang device:", link);
+    }
+  });
+}
 
 // ─── Script Viewer Modal ───────────────────────
 let currentModalClipId = null;
@@ -980,5 +1077,7 @@ document.addEventListener("keydown", (e) => {
 });
 
 // ─── Initialize ────────────────────────────────
+checkAndLoadSyncFromURL();
 updateStats();
 renderCards();
+updateUrlWithSyncData();

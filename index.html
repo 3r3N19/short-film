@@ -71,12 +71,20 @@
     </div>
   </section>
 
-  <!-- ===== FILTER BAR ===== -->
-  <div class="filter-bar">
-    <button class="filter-btn active" data-filter="all">All (12)</button>
-    <button class="filter-btn" data-filter="not-started">Not Started</button>
-    <button class="filter-btn" data-filter="in-progress">In Progress</button>
-    <button class="filter-btn" data-filter="completed">Completed</button>
+  <!-- ===== ACTION BAR (Filter + Sync Link Button) ===== -->
+  <div class="action-bar">
+    <div class="filter-bar">
+      <button class="filter-btn active" data-filter="all">All (12)</button>
+      <button class="filter-btn" data-filter="not-started">Not Started</button>
+      <button class="filter-btn" data-filter="in-progress">In Progress</button>
+      <button class="filter-btn" data-filter="completed">Completed</button>
+    </div>
+    <div class="sync-actions">
+      <button class="sync-btn" id="copySyncBtn" title="Kopyahin ang link na may dalang progress para ma-access sa ibang device">
+        <span class="sync-btn__icon">🔗</span>
+        <span>Copy Sync Link</span>
+      </button>
+    </div>
   </div>
 
   <!-- ===== CLIP CARDS GRID ===== -->
@@ -122,6 +130,9 @@
       </div>
     </div>
   </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast"></div>
 
   <script src="script.js"></script>
 </body>
