@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Film Clip Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <div class="header__icon">🎬</div>
+    <h1 class="header__title">Film Clip Tracker</h1>
+    <p class="header__subtitle">Track your short-film clips from script to screen</p>
+
+    <!-- Production Meta Banner: Estimated Runtime & Deadline Countdown -->
+    <div class="production-banner">
+      <div class="production-banner__item">
+        <span class="production-banner__icon">⏱️</span>
+        <div>
+          <div class="production-banner__label">Est. Total Runtime</div>
+          <div class="production-banner__val">~10 - 13 mins (Avg. 11.5 mins)</div>
+        </div>
+      </div>
+      <div class="production-banner__divider"></div>
+      <div class="production-banner__item">
+        <span class="production-banner__icon">🎯</span>
+        <div>
+          <div class="production-banner__label">Production Deadline</div>
+          <div class="production-banner__val">Oct 20, 2026 • 11:30 PM</div>
+        </div>
+      </div>
+      <div class="production-banner__divider"></div>
+      <div class="production-banner__item production-banner__item--timer">
+        <span class="production-banner__icon">⏳</span>
+        <div>
+          <div class="production-banner__label">Time Remaining</div>
+          <div class="production-banner__val countdown-time" id="deadlineCountdown">Calculating...</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== STATS BAR ===== -->
+  <section class="stats">
+    <div class="stat-card">
+      <span class="stat-card__value" id="totalClips">12</span>
+      <span class="stat-card__label">Total Clips</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__value stat-card__value--green" id="completedClips">0</span>
+      <span class="stat-card__label">Completed</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__value stat-card__value--yellow" id="inProgressClips">0</span>
+      <span class="stat-card__label">In Progress</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__value" id="remainingClips">12</span>
+      <span class="stat-card__label">Remaining</span>
+    </div>
+    <div class="stat-card stat-card--wide">
+      <div class="stat-card__progress-header">
+        <span class="stat-card__label">Overall Progress</span>
+        <span class="stat-card__value" id="progressPercent">0%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-bar__fill" id="progressBar"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FILTER BAR ===== -->
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">All (12)</button>
+    <button class="filter-btn" data-filter="not-started">Not Started</button>
+    <button class="filter-btn" data-filter="in-progress">In Progress</button>
+    <button class="filter-btn" data-filter="completed">Completed</button>
+  </div>
+
+  <!-- ===== CLIP CARDS GRID ===== -->
+  <main class="clips-grid" id="clipsGrid">
+    <!-- Cards rendered by script.js -->
+  </main>
+
+  <!-- ===== SCRIPT VIEWER MODAL ===== -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" role="dialog" aria-modal="true">
+
+      <div class="modal__header">
+        <div>
+          <span class="modal__clip-number" id="modalClipNum">Clip 1</span>
+          <h2 class="modal__title" id="modalTitle">Clip Title</h2>
+        </div>
+        <button class="modal__close" id="modalClose" aria-label="Close modal">&times;</button>
+      </div>
+
+      <div class="modal__body">
+
+        <!-- Script meta: Location, Cast, Runtime Est -->
+        <div class="script-meta" id="scriptMeta"></div>
+
+        <!-- Costume / Wardrobe Section (Ano bagay isuot) -->
+        <div class="wardrobe-section" id="wardrobeSection"></div>
+
+        <!-- Script content — shots -->
+        <div class="script-shots" id="scriptShots"></div>
+
+        <!-- Checklist -->
+        <div class="checklist">
+          <h3 class="checklist__title">Production Checklist</h3>
+          <div class="checklist__progress">
+            <span id="checklistProgress">0 / 6 tasks</span>
+            <div class="progress-bar progress-bar--small">
+              <div class="progress-bar__fill" id="checklistBar"></div>
+            </div>
+          </div>
+          <ul class="checklist__list" id="checklistList"></ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
